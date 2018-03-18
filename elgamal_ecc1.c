@@ -1,8 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<gmp.h>
-//#include <gmpxx.h>
-
 
 struct Elliptic_Curve
 {
@@ -21,9 +19,8 @@ struct Point cipher1_fn(struct Point P , mpz_t r){
   struct Point A,B,C;
   mpz_init(A.x); mpz_init(A.y);
   mpz_init(B.x); mpz_init(B.y);
-    mpz_init(C.x); mpz_init(C.y);
-//  mpz_t i;
-  //mpz_init(i);
+  mpz_init(C.x); mpz_init(C.y);
+
   mpz_set (B.x,P.x);
   mpz_set (B.y,P.y);
   mpz_set (A.x,P.x);
@@ -36,11 +33,7 @@ struct Point cipher1_fn(struct Point P , mpz_t r){
   mpz_set_str(i, "1", 10);
 
   for (; mpz_cmp(i,r)< 0; mpz_add_ui(i, i, 1)) {
-/*mpz_class a;
-
-for(a=0;a<3;a++)
-cout<<"Hello world!"<<endl;
-*/ // for(i='0';i<r;i++){
+    
     mpz_t lamda;
     mpz_init(lamda);
     mpz_t temp1;
@@ -58,32 +51,25 @@ cout<<"Hello world!"<<endl;
     gmp_printf("\nBefore if else\nB.x: %Zd\tB.y: %Zd\n",B.x,B.y);
     gmp_printf("\nP.x: %Zd\tP.y: %Zd\n",P.x,P.y);
 
-  //  if(P.x == B.x && P.y == B.y){
+
   if(mpz_cmp (P.x,B.x) == 0 && mpz_cmp (P.y,B.y) == 0){
         mpz_pow_ui (A.x, A.x, 2);
-        mpz_mul_ui (A.x, A.x, 3);      //x1= 3(x1^2)      // p must be defined globally Zp*
+        mpz_mul_ui (A.x, A.x, 3);      //x1= 3(x1^2)      
         mpz_add (A.x, A.x, EC.a);         //x1 = 3(x1^2) + a
         mpz_mul_ui (A.y, A.y, 2);      // y1 = 2y1
 
-        //mpz_invert (mpz_t rop, const mpz_t op1, const mpz_t op2)
         mpz_invert (A.y, A.y, EC.p);
         mpz_mul (A.x, A.x, A.y);
-        //mpz_mod (mpz_t r, const mpz_t n, const mpz_t d)
         mpz_mod (lamda, A.x, EC.p);   // x1 = (3(x1^2) +a )/2(y1) mod p
 
         mpz_pow_ui (B.x, lamda, 2);
-      //  mpz_mul_ui (temp2, B.x, 2);
-
-        //mpz_submul (mpz_t rop, const mpz_t op1, const mpz_t op2)
         mpz_t temp3;
         mpz_init(temp3);
         mpz_set_str(temp3, "2", 10);
         mpz_submul (B.x, temp3, P.x);
         mpz_mod (B.x, B.x, EC.p);
 
-        //mpz_sub (mpz_t rop, const mpz_t op1, const mpz_t op2)
         mpz_sub (B.y, P.x, B.x);  // x1-x3
-        //mpz_mul (mpz_t rop, const mpz_t op1, const mpz_t op2)
         mpz_mul (B.y, lamda,B.y);
         mpz_sub (B.y, B.y , P.y);
         mpz_mod (B.y, B.y, EC.p);
@@ -98,19 +84,12 @@ cout<<"Hello world!"<<endl;
     }
 
     else  {
-    //  mpz_set (A.x,P.x);
-      // mpz_set (A.y,P.y);
-      //gmp_printf("\nr:: %Zd\n",r);
-      //printf("\nk : %d\n",k);
-    //  gmp_printf("\nB.x: %Zd\nB.y: %Zd\n",B.x,B.y);
-      //gmp_printf("\nP.x: %Zd\nP.y: %Zd\n",P.x,P.y);
       mpz_sub (A.y, P.y , B.y);
       mpz_sub (A.x, P.x , B.x);
       mpz_invert (A.x, A.x, EC.p);
       mpz_mul (A.x, A.y, A.x);
       mpz_mod (lamda, A.x, EC.p);
 
-    //  mpz_pow_ui (mpz_t rop, const mpz_t base, unsigned long int exp)
       mpz_pow_ui (temp1, lamda, 2);
       mpz_sub (B.x, temp1 , B.x);
       mpz_sub (B.x, B.x , P.x);
@@ -154,41 +133,33 @@ struct Point cipher2_fn(struct Point Q , struct Point M , mpz_t r){
   mpz_init(temp3);
   mpz_set_str(temp3, "0", 10);
 
-  //if(Ra.x == M.x && Ra.y == M.y){
+
   if(mpz_cmp (Ra.x,M.x) == 0 && mpz_cmp (Ra.y,M.y) == 0){
-      //mpz_set (A.x,B.x);
-      //mpz_set (A.y,B.y);
+
       mpz_pow_ui (A.x, A.x, 2);
-      mpz_mul_ui (A.x, A.x, 3);      //x1= 3(x1^2)      // p must be defined globally Zp*
+      mpz_mul_ui (A.x, A.x, 3);      //x1= 3(x1^2)      
       mpz_add (A.x, A.x, EC.a);         //x1 = 3(x1^2) + a
       mpz_mul_ui (A.y, A.y, 2);      // y1 = 2y1
 
-      //mpz_invert (mpz_t rop, const mpz_t op1, const mpz_t op2)
       mpz_invert (A.y, A.y, EC.p);
       mpz_mul (A.x, A.x, A.y);
-      //mpz_mod (mpz_t r, const mpz_t n, const mpz_t d)
       mpz_mod (lamda, A.x, EC.p);   // x1 = (3(x1^2) +a )/2(y1) mod p
 
       mpz_pow_ui (B.x, lamda, 2);
-    //  mpz_mul_ui (temp2, B.x, 2);
-
-      //mpz_submul (mpz_t rop, const mpz_t op1, const mpz_t op2)
       mpz_t temp3;
       mpz_init(temp3);
       mpz_set_str(temp3, "2", 10);
       mpz_submul (B.x, temp3, M.x);
       mpz_mod (B.x, B.x, EC.p);
-      //mpz_sub (mpz_t rop, const mpz_t op1, const mpz_t op2)
+
       mpz_sub (B.y, Ra.x, B.x);
-      //mpz_mul (mpz_t rop, const mpz_t op1, const mpz_t op2)
+
       mpz_mul (B.y, lamda,B.y);
       mpz_sub (B.y, B.y , Ra.y);
       mpz_mod (B.y, B.y, EC.p);
   }
-  else if (mpz_cmp (Ra.x,M.x) != 0 || (mpz_cmp (temp2,temp3)!=0)) {//(B.y != M.y && (B.y + M.y != 0))) {
-    //mpz_set (A.x,M.x);
-    //mpz_set (A.y,M.y);
-
+  else if (mpz_cmp (Ra.x,M.x) != 0 || (mpz_cmp (temp2,temp3)!=0)) {
+    
     mpz_sub (A.y, M.y , Ra.y);
     mpz_sub (A.x, M.x , Ra.x);
     mpz_invert (A.x, A.x, EC.p);
@@ -226,7 +197,7 @@ int main(){
   struct Point P,Q,R,C1,C2,M;
   mpz_init(P.x); mpz_init(P.y);
   mpz_init(Q.x); mpz_init(Q.y);
-//  mpz_init_set_ui(R.x,0); mpz_init_set_ui(R.y,0);
+
   printf("\n Enter Points P(x,y) and Q(x,y)\n");
   gmp_scanf("%Zd",&P.x);
   gmp_scanf("%Zd",&P.y);
@@ -247,9 +218,9 @@ int main(){
   //mpz_t n;
   //mpz_init(n);
   //mpz_urandomm (r,x,EC.p);
-    mpz_set_str(r, "2", 10);
-    gmp_printf("\nr:: %Zd\n",r);
-    //gmp_printf("\nP.x: %Zd\nP.y: %Zd\n",P.x,P.y);
+  mpz_set_str(r, "2", 10);
+  gmp_printf("\nr:: %Zd\n",r);   // r = 2
+
   mpz_init(C1.x); mpz_init(C1.y);
   mpz_init(C2.x); mpz_init(C2.y);
   C1 = cipher1_fn(P,r);
